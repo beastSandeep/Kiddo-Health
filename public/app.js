@@ -5,6 +5,7 @@ function prescriptionApp() {
         searchQuery: '',
         showModal: false,
         showDetailModal: false,
+        showRefModal: false,
         selectedPrescription: null,
         isEditing: false,
         

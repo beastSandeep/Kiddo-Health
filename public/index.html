@@ -7,6 +7,10 @@
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%234F46E5'/><path d='M50 25v50M25 50h50' stroke='white' stroke-width='12' stroke-linecap='round'/></svg>">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script type="module">
+        import medicalAbbreviations from './medicalAbbreviations.js';
+        window.medicalAbbreviations = medicalAbbreviations;
+    </script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <style>
         [x-cloak] { display: none !important; }
@@ -41,6 +45,11 @@
                     <button @click="view = 'dashboard'" :class="view === 'dashboard' ? 'bg-white text-indigo-600' : 'text-indigo-100 hover:text-white'" class="px-4 py-2 rounded-xl text-sm font-bold transition-all shadow-sm">Dashboard</button>
                     <button @click="view = 'growth'" :class="view === 'growth' ? 'bg-white text-indigo-600' : 'text-indigo-100 hover:text-white'" class="px-4 py-2 rounded-xl text-sm font-bold transition-all shadow-sm">Growth Log</button>
                     
+                    <!-- Reference Button -->
+                    <button @click="showRefModal = true" class="text-indigo-100 hover:text-white px-3 py-2 rounded-xl text-sm font-bold transition-all flex items-center bg-indigo-500/30 hover:bg-indigo-500/50" title="Medical Abbreviations Guide">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </button>
+
                     <!-- Data Sync Dropdown -->
                     <div class="relative" x-data="{ syncOpen: false }">
                         <button @click="syncOpen = !syncOpen" @click.away="syncOpen = false" class="text-indigo-100 hover:text-white px-4 py-2 rounded-xl text-sm font-bold transition-all flex items-center">
@@ -517,6 +526,32 @@
                 </div>
             </div>
         </template>
+    </div>
+
+    <!-- Reference Modal -->
+    <div x-show="showRefModal" x-cloak class="fixed inset-0 z-50 no-print flex items-center justify-center p-4">
+        <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm" @click="showRefModal = false"></div>
+        <div class="relative bg-white w-full max-w-4xl max-h-[90vh] rounded-3xl shadow-2xl flex flex-col overflow-hidden">
+            <div class="flex-shrink-0 bg-indigo-600 px-6 py-4 flex justify-between items-center text-white">
+                <h3 class="text-xl font-black">Medical Abbreviations Guide</h3>
+                <button @click="showRefModal = false" class="p-2 hover:bg-indigo-500 rounded-full"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5"/></svg></button>
+            </div>
+            <div class="flex-1 overflow-y-auto p-6 bg-slate-50 space-y-8">
+                <template x-for="(section, sectionName) in window.medicalAbbreviations" :key="sectionName">
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                        <h4 class="text-sm font-black text-indigo-500 uppercase tracking-widest mb-4 border-b border-slate-100 pb-2" x-text="sectionName.replace(/([A-Z])/g, ' $1').trim()"></h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <template x-for="(meaning, abbr) in section" :key="abbr">
+                                <div class="flex justify-between items-start bg-slate-50 p-3 rounded-xl">
+                                    <span class="font-black text-slate-800 text-sm" x-text="abbr"></span>
+                                    <span class="text-xs font-bold text-slate-500 text-right ml-4" x-text="meaning"></span>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </div>
     </div>
 
     <script src="app.js"></script>
